@@ -40,8 +40,7 @@ declare module "topgg.js" {
   }
 
   class TopGG {
-    constructor(public options: Options)
-    client: Client
+    constructor(public client: Client, public options: Options)
     webhook: Webhook
     bots: BotsManager
     readonly bot: BotsManager
@@ -67,7 +66,7 @@ declare module "topgg.js" {
     start(post: boolean = true): Promise<true>
     stop(): void
     waitReady(): Promise<void>
-    on(event: "post", listener: (stats: Omit<BotStats, "shards">) => void): this
+    on(event: "posted", listener: (stats: Omit<BotStats, "shards">) => void): this
   }
 
   class Base { readonly manager: TopGG }
@@ -83,8 +82,8 @@ declare module "topgg.js" {
   }
 
   export class ReviewsManager extends Base {
-    fetch(page: number = 1, id?: Snowflake): Promise<Collection<Snowflake, Review>>
-    iterate(): AsyncGenerator<Review, Collection<Snowflake, Review>, Review>
+    fetch(options: { page: number = 1, botID?: Snowflake, limit: number = 20 }): Promise<Collection<Snowflake, Review>>
+    iterate(botID?: Snowflake): AsyncGenerator<Review, Collection<Snowflake, Review>, Review>
     [Symbol.asyncIterator](): AsyncGenerator<Review, Collection<Snowflake, Review>, Review>
   }
 
@@ -135,7 +134,7 @@ declare module "topgg.js" {
     content: string
     botID: Snowflake
     score: number
-    votes: number
+    upvotes: number
     createdTimestamp: number
     flagged: boolean
     flaggedTimestamp?: number
@@ -147,6 +146,7 @@ declare module "topgg.js" {
     readonly stars: 1 | 2 | 3 | 4 | 5
     readonly createdAt: Date
     readonly flaggedAt: Date
+    posterAvatarURL(options?: { dynamic: boolean; format: string; size: number }): string
   }
 
   export class TopGGUser extends BaseUser {

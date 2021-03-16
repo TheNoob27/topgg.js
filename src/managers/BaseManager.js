@@ -8,7 +8,7 @@ class BaseManager {
   }
 
   get clientID() {
-    const id = this.manager.client.id
+    const id = this.manager.client.user?.id
     if (!id) throw new Error("Your bot has not logged in yet, so no ID is present.")
     return id
   }

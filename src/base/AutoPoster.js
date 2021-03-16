@@ -4,6 +4,7 @@ const EventEmitter = require("events")
 class AutoPoster extends EventEmitter {
   /** @param {import("topgg.js")} manager */
   constructor(manager) {
+    super()
     this.manager = manager
 
     if (this.manager.options.autoPost.enabled) this.start()
@@ -35,7 +36,7 @@ class AutoPoster extends EventEmitter {
     if (this.manager.client.shards) return this._sharderReady()
     // idk how to go about this for libs like kurasuta
     if (this.manager.client.ws.status === 0) return Promise.resolve(true)
-    return new Promise(r => this.client.once("ready", r))
+    return new Promise(r => this.manager.client.once("ready", r))
   }
 
   async post() {
@@ -43,7 +44,7 @@ class AutoPoster extends EventEmitter {
   }
 
   _sharderReady() {
-    if (this.manager.client.shards.size > 0 && this.client.shards.every(x => x.ready)) return Promise.resolve(true)
+    if (this.manager.client.shards.size > 0 && this.manager.client.shards.every(x => x.ready)) return Promise.resolve(true)
 
     return new Promise(r => {
       const handler = id => {

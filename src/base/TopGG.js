@@ -4,10 +4,11 @@ const Webhook = require("./Webhook")
 const Request = require("../util/route")
 const AutoPoster = require("./AutoPoster")
 const TopGGUser = require("../structures/TopGGUser")
+const { default: fetch } = require("node-fetch")
 
 class TopGG {
   constructor(client, options) {
-    if (client || !(client instanceof require("discord.js").Client))
+    if (!client || !(client instanceof require("discord.js").Client))
       throw new Error("No discord.js client was provided.")
 
     /** @type {import("discord.js").Client} */
@@ -36,14 +37,15 @@ class TopGG {
   // endpoints that can't be split and are kinda standalone
   async fetchUser(id) {
     const user = await this.api.users(id).get()
-    return new TopGGUser(user)
+    return new TopGGUser(this, user)
   }
 
 
 
-  async request(method, route, options) {
+  async request(method, route, options = {}) {
+    options = options ?? {}
     const headers = {
-      Authorization: options.auth ?? this.token ?? null,
+      Authorization: (options.auth ?? this.token) || null,
     }
     if (method !== "GET") headers["Content-Type"] = "application/json"
     if (options.query) route += this._toQuery(options.query)

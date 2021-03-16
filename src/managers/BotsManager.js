@@ -8,7 +8,7 @@ class BotsManager extends BaseManager {
   async fetch(id = this.clientID) {
     if (typeof id === "string") {
       const bot = await this.api.bots(id).get()
-      return bot
+      return new Bot(this.manager, bot)
     } else {
       if (!id) return []
       let { limit, offset, search, sort, fields } = id
@@ -43,7 +43,7 @@ class BotsManager extends BaseManager {
     return {
       serverCount: stats.server_count || 0,
       shardCount: stats.shard_count || 0,
-      shards: stats.shards,
+      shards: stats.shards || [],
     }
   }
 
@@ -65,12 +65,12 @@ class BotsManager extends BaseManager {
 
     // shards (number[]) and shard_id (number) are quite pointless tbh and who cares
     const { serverCount: server_count, shardCount: shard_count } = options
-    await this.api.bots.stats.post({
-      data: {
-        server_count,
-        shard_count,
-      },
-    })
+    const data = {
+      ...(server_count != null && { server_count }),
+      ...(shard_count != null && { shard_count })
+    }
+    // idk what posting undefined would do
+    if (Object.keys(data).length) await this.api.bots.stats.post({ data })
     return options
   }
 }

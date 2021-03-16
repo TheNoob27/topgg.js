@@ -8,7 +8,7 @@ class Review extends Base {
     this.content = data.content
     this.botID = data.entityId
     this.score = data.score // /100, number of stars - 20-40-60-80-100
-    this.votes = data.votes // number of upvotes
+    this.upvotes = data.votes // number of upvotes
     this.createdTimestamp = new Date(data.timestamp).getTime()
     // seems like editedAt is always the created timestamp
     // this.editedTimestamp = data.editedAt ? new Date(data.editedAt).getTime() : null
@@ -18,8 +18,9 @@ class Review extends Base {
     // discord user id
     if (data.poster.avatar) [this.authorID] = data.poster.avatar.match(/\d{16,22}/) || []
     this.posterID = data.posterId // top.gg user
-    this.posterUsername = data
-    this.posterAvatar = data.poster.avatar || null
+    this.posterUsername = data.poster.username
+    this.posterAvatar =
+      data.poster.avatar?.match(/(?:https:\/\/cdn\.discordapp\.com\/avatars\/\d+\/|^)(\w+)/)?.[1] || null
 
     this.reply = data.reply
       ? {
@@ -42,6 +43,11 @@ class Review extends Base {
 
   get flaggedAt() {
     return this.flaggedTimestamp && new Date(this.flaggedTimestamp)
+  }
+
+  posterAvatarURL({ format, size, dynamic } = {}) {
+    if (!this.posterAvatar || !this.authorID) return null
+    return this.manager.client.rest.cdn.Avatar(this.authorID, this.posterAvatar, format, size, dynamic)
   }
 }
 

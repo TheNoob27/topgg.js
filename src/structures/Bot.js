@@ -4,11 +4,16 @@ class Bot extends BaseUser {
   constructor(manager, data) {
     super(manager, data)
 
-    this.library = data.lib
+    this.library = data.lib || null
     this.prefix = data.prefix
 
     this.shortDescription = data.shortdesc
-    this.longDescription = data.longdesc
+    // because its too long and takes up too much space in logs and such - might revert later
+    Object.defineProperty(this, "longDescription", {
+      value: data.longdesc,
+      writable: true,
+      configurable: true
+    })
 
     this.tags = data.tags
     this.website = data.website
@@ -18,18 +23,18 @@ class Bot extends BaseUser {
 
     this.owners = data.owners
     this.featuredGuilds = data.guilds
-    this.shards = data.shards
+    this.shards = data.shards || []
 
     this.approvedTimestamp = new Date(data.date).getTime()
     this.certified = data.certifiedBot
-    this.vanity = data.vanity
+    this.vanity = data.vanity ?? null
 
     this.votes = data.points
     this.monthlyVotes = data.monthlyPoints
     this.serverCount = data.server_count // guildCount serverCount hmm
-    this.shardCount = data.shard_count
+    this.shardCount = data.shard_count || 0
 
-    this.donateBotGuildID = data.donatebotguildid
+    this.donateBotGuildID = data.donatebotguildid || null
   }
 
   get me() {
@@ -57,8 +62,8 @@ class Bot extends BaseUser {
   async fetchStats() {
     const stats = await this.manager.bots.fetchStats(this.id)
     this.serverCount = stats.serverCount
-    this.shards = data.shards
-    this.shardCount = data.shardCount
+    this.shards = stats.shards
+    this.shardCount = stats.shardCount
     return stats
   }
 }

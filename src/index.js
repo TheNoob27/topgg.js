@@ -13,7 +13,7 @@ module.exports = Object.assign(TopGG, {
   User: require("./structures/TopGGUser"),
 
   BaseManager: require("./managers/BaseManager"),
-  BotManager: require("./managers/BotManager"),
+  BotsManager: require("./managers/BotsManager"),
   ReviewsManager: require("./managers/ReviewsManager"),
 
   internalServers: require("./util/internalServers")
