@@ -2,7 +2,7 @@
 // managers handle endpoints so the main class isn't cluttered with fetchBot() searchBots() fetchUser() etc
 class BaseManager {
   constructor(manager) {
-    /** @type {import("topgg.js")} */
+    /** @type {import("topgg.js").default} */
     this.manager
     Object.defineProperty(this, "manager", { value: manager })
   }

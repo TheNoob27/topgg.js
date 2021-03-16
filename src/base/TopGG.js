@@ -80,7 +80,7 @@ class TopGG {
     return str === "?" ? "" : str
   }
 
-  /** @param {import("topgg.js").Options} options */
+  /** @param {import("topgg.js").default.Options} options */
   _validateOptions(options) {
     if (options.token) {
       Object.defineProperty(this, "token", { value: options.token, writable: true, configurable: true })
@@ -99,26 +99,26 @@ class TopGG {
       }
     }
 
-    if (options.onVote && typeof options.onVote === "object" && options.onVote.webhook)
+    if (options.onVote && typeof options.onVote === "object" && options.onVote.webhook) {
       if (!options.onVote.webhook.url || !options.onVote.webhook.url.startsWith("https://discord.com/api/webhooks"))
         options.onVote.webhook = null
-      else if (typeof options.onVote === "function") {
-        if (options.internalServer) {
-          const handle = options.onVote
-          options.internalServer.middleware = function(req, res, next) {
-            handle(req.voter, req, res)
-            next()
-          }
+    }
+    else if (typeof options.onVote === "function") {
+      if (options.internalServer) {
+        const handle = options.onVote
+        options.internalServer.middleware = function(req, res, next) {
+          handle(req.voter, req, res)
+          next()
         }
-        options.onVote = null
       }
+      options.onVote = null
+    }
 
     if (options.internalServer) {
       options.internalServer = Object.assign(
         {
           endpoint: "/dblwebhook",
           port: 6815,
-          middleware: [],
         },
         {
           ...options.internalServer,

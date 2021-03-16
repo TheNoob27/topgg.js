@@ -1,4 +1,4 @@
-/** @type {typeof import("topgg.js")} */
+/** @type {typeof import("topgg.js").default} */
 const TopGG = require("../src")
 const old = TopGG.prototype.request
 TopGG.prototype.request = function (m, url, ops) {

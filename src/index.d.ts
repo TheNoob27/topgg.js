@@ -22,25 +22,27 @@ declare module "topgg.js" {
       interval: number
     }
 
-    onVote: (user: User, req, res) => any | {
+    onVote: ((user: User, req: Express.Request, res: Express.Response) => any) | {
       dmMessage: SendMessageOptions
       webhook: {
-        displayAsUser: string
+        displayAsUser: boolean
         url: string
         message: SendMessageOptions
       }
     }
 
     internalServer: {
-      type: "express" | "fastify" = "express"
-      endpoint: string = "/dblwebhook"
-      port: number = 6815,
-      middleware: (req, res, next) => any
+      type: "express" | "fastify"
+      endpoint: string
+      port: number
+      middleware: (req: Express.Request, res: Express.Response, next: () => void) => any
     }
   }
 
   class TopGG {
-    constructor(public client: Client, public options: Options)
+    constructor(client: Client, options: Options)
+    client: Client
+    options: Options
     webhook: Webhook
     bots: BotsManager
     readonly bot: BotsManager
@@ -51,17 +53,19 @@ declare module "topgg.js" {
     request(method: "GET" | "POST" | "DELETE", route: string, options: any): Promise<any>
   }
 
-  export = TopGG
+  export default TopGG
   export { TopGG }
 
   export class Webhook {
-    constructor(public manager: TopGG)
-    middleware(type: "express" | "fastify"): (req, res, next) => void
-    middleware(req, res, next): void
+    constructor(manager: TopGGUser)
+    manager: TopGG
+    middleware(type: "express" | "fastify"): (req: Express.Request, res: Express.Response, next: () => void) => void
+    middleware(req: Express.Request, res: Express.Response, next: () => void): void
   }
 
   export class AutoPoster extends EventEmitter {
-    constructor(public manager: TopGG)
+    constructor(manager: TopGG)
+    manager: TopGG
     readonly interval: NodeJS.Timeout
     start(post: boolean = true): Promise<true>
     stop(): void
@@ -88,6 +92,7 @@ declare module "topgg.js" {
   }
 
   export class BaseUser extends Base {
+    constructor(manager: TopGGUser, data: any)
     id: Snowflake
     username: string
     discriminator: `${number}` // why not

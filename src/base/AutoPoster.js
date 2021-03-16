@@ -2,7 +2,7 @@ const kInterval = Symbol("postingInterval")
 const EventEmitter = require("events")
 
 class AutoPoster extends EventEmitter {
-  /** @param {import("topgg.js")} manager */
+  /** @param {import("topgg.js").default} manager */
   constructor(manager) {
     super()
     this.manager = manager
