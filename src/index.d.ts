@@ -49,7 +49,7 @@ declare module "topgg.js" {
     reviews: ReviewsManager
     autoPoster?: AutoPoster
 
-    fetchUser(id: Snowflake): TopGGUser
+    fetchUser(id: Snowflake): Promise<TopGGUser>
     request(method: "GET" | "POST" | "DELETE", route: string, options: any): Promise<any>
   }
 

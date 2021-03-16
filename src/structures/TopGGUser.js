@@ -21,13 +21,7 @@ class TopGGUser extends BaseUser {
     this.websiteModerator = data.webMod // bot reviewers?
     this.admin = data.admin
 
-    this.socials = {
-      youtube: data.social.youtube || null,
-      reddit: data.social.reddit || null,
-      twitter: data.social.twitter || null,
-      instagram: data.social.instagram || null,
-      github: data.social.github || null,
-    }
+    this.socials = data.social || {}
   }
 
   get hexColor() {
